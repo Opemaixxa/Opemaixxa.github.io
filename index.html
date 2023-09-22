@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Title</title>
+    <!-- هدر Access-Control-Allow-Origin به تمام دامنه‌ها اجازه دسترسی می‌دهد -->
+    <meta http-equiv="Access-Control-Allow-Origin" content="*">
+</head>
+<body>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>amir</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fff; /* پس زمینه سفید */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end; /* ترتیب کادر پیام در پایین */
+            height: 100vh; /* تنظیم ارتفاع برای امکان اسکرول */
+        }
+        #responseContainer {
+            flex: 1; /* گسترش مخزن به تمام ارتفاع باقی‌مانده */
+            overflow-y: auto; /* افزودن اسکرول به مخزن در صورت نیاز */
+            background-color: #000; /* بک‌گراند سیاه */
+            color: #fff; /* متن سفید */
+            border-radius: 15px; /* گوشه‌های نیم دایره */
+            padding: 10px;
+            width: 80%; /* تنظیم عرض مخزن */
+            margin-bottom: 10px; /* فاصله از پایین */
+        }
+        #textInputContainer {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end; /* قرارگیری کادر پیام در پایین */
+            margin-top: 10px; /* فاصله بین کادر پیام و دکمه ارسال */
+            width: 80%;
+        }
+        #textInput {
+            width: 100%;
+            padding: 5px;
+            border-radius: 15px; /* گوشه‌های نیم دایره */
+            transform: skew(-10deg); /* خم کردن گوشه‌ها به چپ */
+            background-color: #e3e3e3; /* رنگ پس زمینه کادر پیام */
+            border: none;
+        }
+        #sendButton {
+            background-color: #007bff; /* رنگ آبی */
+            color: #fff; /* رنگ متن سفید */
+            border: none;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 50%; /* تبدیل به دایره */
+            cursor: pointer;
+            transition: background-color 0.3s, box-shadow 0.3s;
+            align-self: flex-end; /* قرارگیری کلید Send در سمت راست */
+            width: 50px; /* عرض کلید دایره */
+            height: 50px; /* ارتفاع کلید دایره */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-left: 20px; /* فاصله از چپ صفحه */
+            margin-top: 10px; /* فاصله از بالا صفحه */
+        }
+        /* افزودن خط سیاه جداکننده */
+        .separator {
+            border-top: 1px solid #fff; /* خط سیاه با رنگ سفید */
+            margin-top: 10px;
+            width: 100%;
+        }
+        /* افزودن منو با گزینه‌های Make by amir و Rubika:@amirhossain و Number:09906055202 */
+        #menu {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin: 10px 20px;
+        }
+        .menu-item {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="title">openai</div>
+    <div id="menu">
+        <div class="menu-item">Make by amir</div>
+        <div class="menu-item">amirhossain</div>
+        <div class="menu-item">Number:09906055202</div>
+    </div>
+    <div id="responseContainer"></div>
+    <div id="textInputContainer">
+        <textarea id="textInput" rows="4" placeholder="message"></textarea>
+        <button id="sendButton" onclick="sendToWebService()">&#9654;</button>
+    </div>
+
+    <script>
+        async function sendToWebService() {
+            const textInput = document.getElementById('textInput').value;
+            const responseContainer = document.getElementById('responseContainer');
+            
+            try {
+                const response = await fetch(`https://api2.haji-api.ir/gpt/gpt.php?text=${encodeURIComponent(textInput)}`);
+                const data = await response.json();
+
+                if (data.result && data.result.answer) {
+                    // افزودن جواب جدید به مخزن
+                    const newResponse = document.createElement('div');
+                    newResponse.textContent = data.result.answer;
+                    responseContainer.appendChild(newResponse);
+
+                    // افزودن خط سیاه جداکننده
+                    const separator = document.createElement('div');
+                    separator.classList.add('separator');
+                    responseContainer.appendChild(separator);
+                } else {
+                    responseContainer.textContent = 'ERROR';
+                }
+                
+                document.getElementById('textInput').value = ''; // پاک کردن متن ارسالی
+            } catch (error) {
+                console.error('خطا: ', error);
+                responseContainer.textContent = 'خطا در ارتباط با وب سرویس.';
+            }
+        }
+    </script>
+</body>
+</html>
